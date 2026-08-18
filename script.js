@@ -1,216 +1,293 @@
+const flowersContainer = document.getElementById("flowers");
+const messageElement = document.getElementById("message");
+const countElement = document.getElementById("count");
+const welcome = document.getElementById("welcome");
+
 const flowerTypes = [
   {
-    name: "rosa",
+    className: "rose",
     messages: [
       "Você é mais forte do que imagina. 🌹",
-      "Meu carinho por você floresce todos os dias. 🌹",
-      "Mesmo nos dias difíceis, continue acreditando em você. 🌹",
-      "Você nunca precisa esquecer o quanto é especial. 🌹"
+      "Meu carinho por você floresce todos os dias.",
+      "Mesmo nos dias difíceis, eu continuo acreditando em você.",
+      "Você merece todo o amor e carinho do mundo."
     ]
   },
+
   {
-    name: "sunflower",
+    className: "sunflower",
     messages: [
-      "Que você sempre encontre um pouquinho de luz, mesmo nos dias nublados. 🌻",
-      "Continue olhando para frente. Dias melhores virão. 🌻",
-      "Você ilumina a vida de quem tem a sorte de estar ao seu lado. 🌻",
-      "Eu acredito na sua força. 🌻"
+      "Continue procurando a luz, mesmo nos dias difíceis. 🌻",
+      "Eu acredito na sua força.",
+      "Você ilumina a vida de quem está ao seu lado.",
+      "Dias melhores ainda vão florescer."
     ]
   },
+
   {
-    name: "tulip",
+    className: "tulip",
     messages: [
-      "Todo recomeço pode esconder uma coisa linda. 🌷",
-      "Você merece carinho, paz e dias leves. 🌷",
-      "Não tenha medo de recomeçar. Eu acredito em você. 🌷",
-      "Um passo de cada vez. Você vai conseguir. 🌷"
+      "Um passo de cada vez. Você consegue. 🌷",
+      "Todo recomeço pode trazer algo bonito.",
+      "Não tenha medo de continuar.",
+      "Eu estarei torcendo por você."
     ]
   },
+
   {
-    name: "orchid",
+    className: "orchid",
     messages: [
-      "Sua força é linda, até quando você não consegue enxergá-la. 🌺",
-      "Você é admirável exatamente por ser quem é. 🌺",
-      "Nem toda força precisa fazer barulho. A sua está aí. 🌺",
-      "Cuide de você com o mesmo carinho que oferece aos outros. 🌺"
+      "Sua força é linda, até quando você não percebe.",
+      "Você é muito mais forte do que pensa. 🌺",
+      "Admiro a pessoa que você é.",
+      "Continue florescendo do seu jeito."
     ]
   },
+
   {
-    name: "lily",
+    className: "lily",
     messages: [
       "Respira. Você não precisa resolver tudo hoje. 🤍",
-      "Que seu coração encontre um pouco de paz hoje. 🤍",
-      "Você merece descansar sem sentir culpa. 🤍",
-      "Estou torcendo por você, sempre. 🤍"
+      "Que seu coração encontre um pouco de paz.",
+      "Você também merece descansar.",
+      "Estou aqui, mesmo nos dias difíceis."
     ]
   },
+
   {
-    name: "carnation",
+    className: "carnation",
     messages: [
-      "Continue. Mesmo devagar, você continua avançando. 🌸",
-      "Eu sei que você consegue atravessar essa fase. 🌸",
-      "Você já superou tanta coisa. Não duvide da sua força. 🌸",
-      "Quando estiver cansada, lembre-se de que você não está sozinha. 🌸"
+      "Continue. Mesmo devagar, você está avançando. 🌸",
+      "Você já conseguiu chegar tão longe.",
+      "Não desista de você.",
+      "Sua determinação me inspira."
     ]
   },
+
   {
-    name: "daisy",
+    className: "daisy",
     messages: [
-      "Espero que hoje você encontre um motivo para sorrir. 🌼",
-      "Coisas pequenas também podem deixar o coração feliz. 🌼",
-      "Você merece muitos momentos leves e felizes. 🌼",
-      "Que nunca faltem motivos para florescer. 🌼"
+      "Que hoje encontre um motivo para sorrir. 🌼",
+      "Você merece dias leves.",
+      "Que nunca faltem motivos para florescer.",
+      "Pequenas coisas também podem deixar o coração feliz."
     ]
   },
+
   {
-    name: "violet",
+    className: "violet",
     messages: [
       "Você é muito querida. Nunca se esqueça disso. 💜",
-      "Meu carinho por você está aqui, mesmo nos dias difíceis. 💜",
-      "Você não precisa ser forte o tempo inteiro. 💜",
-      "Se precisar de um abraço, imagine este jardim te abraçando. 💜"
+      "Meu carinho está sempre com você.",
+      "Você não precisa ser forte o tempo inteiro.",
+      "Se precisar de um abraço, este jardim é seu."
     ]
   }
 ];
 
-const garden = document.getElementById("garden");
-const message = document.getElementById("message");
-const flowerCountElement = document.getElementById("flowerCount");
+let flowerCount =
+  Number(localStorage.getItem("flowerCount")) || 0;
 
-let flowerCount = Number(localStorage.getItem("flowerCount")) || 0;
+countElement.textContent = flowerCount;
 
-flowerCountElement.textContent = flowerCount;
+let messageTimer = null;
 
-function randomItem(array) {
-  return array[Math.floor(Math.random() * array.length)];
+
+/* ---------------------------
+   ESCOLHER ITEM ALEATÓRIO
+---------------------------- */
+
+function random(array) {
+  return array[
+    Math.floor(Math.random() * array.length)
+  ];
 }
 
+
+/* ---------------------------
+   CRIAR FLOR
+---------------------------- */
+
 function createFlower(x, y) {
-  const type = randomItem(flowerTypes);
+
+  const type = random(flowerTypes);
 
   const flower = document.createElement("div");
-  flower.className = `flower ${type.name}`;
 
-  const size = 0.75 + Math.random() * 0.65;
+  flower.className =
+    `flower ${type.className}`;
+
+  /*
+    Cada flor possui uma pequena variação
+    para o jardim não parecer repetitivo.
+  */
+
+  const size =
+    0.72 + Math.random() * 0.48;
+
+  const rotation =
+    -5 + Math.random() * 10;
 
   flower.style.left = `${x}px`;
   flower.style.top = `${y}px`;
-  flower.style.transformOrigin = "bottom center";
 
   flower.innerHTML = `
-    <div class="flower-inner" style="transform: scale(${size})">
-      <div class="head"></div>
-      <div class="stem"></div>
-      <div class="leaf left"></div>
-      <div class="leaf right"></div>
-    </div>
+    <div
+      class="stem"
+      style="
+        transform: rotate(${rotation}deg);
+        height: ${65 + Math.random() * 25}px;
+      "
+    ></div>
+
+    <div class="leaf left"></div>
+    <div class="leaf right"></div>
+
+    <div
+      class="head"
+      style="transform: scale(${size})"
+    ></div>
   `;
 
-  garden.appendChild(flower);
+  flowersContainer.appendChild(flower);
 
   flowerCount++;
-  flowerCountElement.textContent = flowerCount;
 
-  localStorage.setItem("flowerCount", flowerCount);
+  countElement.textContent =
+    flowerCount;
 
-  showMessage(randomItem(type.messages));
+  localStorage.setItem(
+    "flowerCount",
+    flowerCount
+  );
+
+  showMessage(
+    random(type.messages)
+  );
+
+  /*
+    Depois do primeiro toque,
+    o texto inicial desaparece.
+  */
+
+  welcome.classList.add("hidden");
 }
 
-let messageTimeout;
+
+/* ---------------------------
+   MENSAGENS
+---------------------------- */
 
 function showMessage(text) {
-  message.textContent = text;
-  message.classList.add("show");
 
-  clearTimeout(messageTimeout);
+  messageElement.textContent = text;
 
-  messageTimeout = setTimeout(() => {
-    message.classList.remove("show");
-  }, 3000);
-}
+  messageElement.classList.add(
+    "visible"
+  );
 
-/*
- * Cada toque na tela cria uma flor.
- * pointerdown funciona tanto no celular quanto no computador.
- */
+  clearTimeout(messageTimer);
 
-document.addEventListener("pointerdown", (event) => {
-  // Não cria flor quando o toque acontece no contador.
-  if (event.target.closest("#counter")) {
-    return;
-  }
+  messageTimer = setTimeout(() => {
 
-  const x = event.clientX;
-  const y = event.clientY;
+    messageElement.classList.remove(
+      "visible"
+    );
 
-  // A flor nasce no ponto tocado.
-  createFlower(x, y);
-
-  // Pequenas partículas de carinho.
-  createHearts(x, y);
-});
-
-
-function createHearts(x, y) {
-  const heartCount = 3;
-
-  for (let i = 0; i < heartCount; i++) {
-    const heart = document.createElement("div");
-
-    heart.textContent = Math.random() > 0.5 ? "♥" : "♡";
-
-    heart.style.position = "fixed";
-    heart.style.left = `${x + (Math.random() * 40 - 20)}px`;
-    heart.style.top = `${y}px`;
-    heart.style.zIndex = "150";
-    heart.style.color = Math.random() > 0.5 ? "#ff6b81" : "#d98cff";
-    heart.style.fontSize = `${14 + Math.random() * 10}px`;
-    heart.style.pointerEvents = "none";
-    heart.style.transition = "all 1.2s ease";
-
-    document.body.appendChild(heart);
-
-    requestAnimationFrame(() => {
-      heart.style.transform = `
-        translate(
-          ${(Math.random() * 80) - 40}px,
-          -${50 + Math.random() * 80}px
-        )
-        rotate(${Math.random() * 40 - 20}deg)
-      `;
-
-      heart.style.opacity = "0";
-    });
-
-    setTimeout(() => {
-      heart.remove();
-    }, 1300);
-  }
+  }, 3200);
 }
 
 
-/*
- * Faz algumas flores surgirem automaticamente
- * quando o jardim é aberto pela primeira vez.
- */
+/* ---------------------------
+   TOQUE NA TELA
+---------------------------- */
 
-if (!localStorage.getItem("gardenStarted")) {
-  localStorage.setItem("gardenStarted", "true");
+document.addEventListener(
+  "pointerdown",
+  function(event) {
 
-  setTimeout(() => {
-    const initialFlowers = 6;
+    /*
+      Ignora alguns elementos de interface.
+    */
 
-    for (let i = 0; i < initialFlowers; i++) {
-      const x = 30 + Math.random() * (window.innerWidth - 60);
-      const y =
-        window.innerHeight * 0.66 +
-        Math.random() * window.innerHeight * 0.28;
-
-      createFlower(x, y);
+    if (
+      event.target.closest("#counter")
+    ) {
+      return;
     }
 
-    showMessage(
-      "Este jardim começa pequeno... mas pode crescer infinitamente com você. 💕"
-    );
-  }, 500);
+    let x = event.clientX;
+    let y = event.clientY;
+
+    /*
+      A flor precisa nascer no campo.
+      Se ela tocar muito perto da parte
+      superior, colocamos a flor um pouco
+      mais para baixo.
+    */
+
+    const flowerHeight = 100;
+
+    if (y < flowerHeight) {
+      y = flowerHeight;
+    }
+
+    /*
+      Pequena variação para que as flores
+      não fiquem todas exatamente alinhadas.
+    */
+
+    x +=
+      Math.random() * 18 - 9;
+
+    y +=
+      Math.random() * 12 - 6;
+
+    createFlower(x, y);
+  }
+);
+
+
+/* ---------------------------
+   VAGALUMES
+---------------------------- */
+
+function createFireflies() {
+
+  for (let i = 0; i < 22; i++) {
+
+    const firefly =
+      document.createElement("div");
+
+    firefly.className =
+      "firefly";
+
+    firefly.style.left =
+      `${Math.random() * 100}%`;
+
+    firefly.style.top =
+      `${Math.random() * 100}%`;
+
+    firefly.style.animationDelay =
+      `${Math.random() * 5}s`;
+
+    document.getElementById(
+      "garden"
+    ).appendChild(firefly);
+  }
 }
+
+createFireflies();
+
+
+/* ---------------------------
+   PRIMEIRA MENSAGEM
+---------------------------- */
+
+setTimeout(() => {
+
+  showMessage(
+    "Toque em qualquer lugar e faça nascer uma flor. 🌱"
+  );
+
+}, 1800);
